@@ -13,16 +13,44 @@ class Matrix {
   public:
     std::vector<Type> data;
     std::tuple<std::size_t, std::size_t> shape;
-
+    
+    // constructors
     Matrix(std::size_t rows, std::size_t cols)
       : rows(rows), cols(cols), data({}) {
       data.resize(rows * cols, Type());
       shape = {rows, cols};
     }
 
-    Matrix() : rows(0), cols(0), data({}) { shape = {rows, cols}; };
+    Matrix() : rows(0), cols(0), data({}) { shape = {rows, cols}; }
 
-    // Modifies matrix
+    // printing shape of matrix 
+    void print_shape() const {
+      std::cout << "Shape : (" << rows << ", " << cols << ")" << std::endl;
+    }
+
+    // printing contents of matrix
+    void print() const {
+      for (std::size_t i = 0; i < rows; ++i) {
+        for (std::size_t j = 0; j < cols; ++j) {
+          std::cout << (*this)(i,j) << ",";
+        }
+        std::cout << std::endl;
+      }
+      std::cout << std::endl;
+    }
+
+    // modifies matrix entry
+    Type& operator()(std::size_t row, std::size_t col) {
+      return data[row * cols + col];
+    }
+
+    // only reads variable
+    const Type& operator()(std::size_t row, std::size_t col) const {
+      return data[row * cols + col];
+    }
+
+    // basic operators for matrix arithmetic
+
     Matrix& operator+=(const Matrix& other) {
       assert(shape == other.shape);
       for (size_t i = 0; i < data.size(); ++i) {
@@ -51,41 +79,25 @@ class Matrix {
       res -= other;
       return res;
     }
+
+    // linear algebra methods
     
-    // modifies variables
-    Type& operator()(std::size_t row, std::size_t col) {
-      return data[row * cols + col];
-    }
-
-    // only reads variable
-    const Type& operator()(std::size_t row, std::size_t col) const {
-      return data[row * cols + col];
-    }
-
-    std::size_t get_rows() const {
-      return rows;
-    }
-
-    std::size_t get_cols() const {
-      return cols;
-    }
-    // printing shape of matrix 
-    void print_shape() const {
-      std::cout << "Shape : (" << rows << ", " << cols << ")" << std::endl;
-    }
-
-    void print() const {
-      for (std::size_t i = 0; i < rows; ++i) {
-        for (std::size_t j = 0; j < cols; ++j) {
-          std::cout << (*this)(i,j) << ",";
+    // multiplies matrices 
+    Matrix mat_mult(Matrix& other) {
+      assert(cols == other.rows);
+      Matrix res(rows, other.cols);
+      for (int i = 0; i < res.rows; ++i) {
+        for (int j = 0; j < res.cols; ++j) {
+          for (int k =0; k < other.rows; ++k) {
+            res(i, j) += (*this)(i, k) * other(k, j);
+          }
         }
-        std::cout << std::endl;
       }
-      std::cout << std::endl;
+      return res;
     }
 
-    Matrix mat_mult(Matrix& other);
 
+    // tranposes the matrix
     Matrix transpose() const {
       Matrix res(cols, rows);
       for (std::size_t i = 0; i < rows; ++i) {
@@ -96,10 +108,19 @@ class Matrix {
       return res;
     }
 
+    // getter functions
+    std::size_t get_rows() const {
+      return rows;
+    }
+
+    std::size_t get_cols() const {
+      return cols;
+    }
 };
 
 int main() {
   Matrix<int> M(3,3);
+  Matrix<int> N;
   int n = M.data.size();
   for (int i = 0; i < n; i++) {
     M.data[i] = i;
@@ -108,5 +129,8 @@ int main() {
   Matrix<int> T = M.transpose();
   T.print();
 
+  Matrix<int> O = M.mat_mult(T);
+
+  O.print();
   return 0;
 }
