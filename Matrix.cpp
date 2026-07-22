@@ -15,12 +15,25 @@ class Matrix {
     std::tuple<std::size_t, std::size_t> shape;
     
     // constructors
+
+    // default constructor
     Matrix(std::size_t rows, std::size_t cols)
       : rows(rows), cols(cols), data({}) {
       data.resize(rows * cols, Type());
       shape = {rows, cols};
     }
 
+    // creates matrix filled with inputted values
+    Matrix(std::size_t rows, std::size_t cols, Type val)
+      : rows(rows), cols(cols), data({}) {
+      data.resize(rows * cols, val);
+      shape = {rows, cols};
+      }
+
+    // creates matrix from inputted vector
+    Matrix(std::vector<Type> arr);
+
+    // no params constructor
     Matrix() : rows(0), cols(0), data({}) { shape = {rows, cols}; }
 
     // printing shape of matrix 
@@ -120,6 +133,7 @@ class Matrix {
 
 int main() {
   Matrix<int> M(3,3);
+  Matrix<int> Two(2, 2, 2);
   Matrix<int> N;
   int n = M.data.size();
   for (int i = 0; i < n; i++) {
