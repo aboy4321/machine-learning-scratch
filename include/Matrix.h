@@ -9,9 +9,9 @@
 template <typename Type> class Matrix {
   private:
     std::size_t rows, cols;
+    std::vector<Type> data;
 
   public:
-    std::vector<Type> data;
     // constructors
 
     // default constructor
@@ -24,7 +24,7 @@ template <typename Type> class Matrix {
     Matrix(std::size_t rows, std::size_t cols, Type val)
       : rows(rows), cols(cols), data({}) {
       data.resize(rows * cols, val);
-      }
+    }
 
     // creates matrix from inputted vector
     Matrix(std::vector<Type> arr);
@@ -32,6 +32,13 @@ template <typename Type> class Matrix {
     // no params constructor
     Matrix() : rows(0), cols(0), data({}) {}
 
+    static Matrix zeros(std::size_t rows, std::size_t cols) {
+      return Matrix(rows, cols, 0);
+    }
+
+    static Matrix ones(std::size_t rows, std::size_t cols) {
+      return Matrix(rows, cols, 1);
+    }
     // printing shape of matrix 
     void print_shape() const {
       std::cout << "Shape : (" << rows << ", " << cols << ")" << std::endl;
@@ -112,6 +119,20 @@ template <typename Type> class Matrix {
       return res;
     }
 
+    // and below is scalar division
+    Matrix operator/=(const double n) {
+      for (std::size_t i = 0; i < data.size(); ++i) {
+        data[i] /= n;
+      }
+      return *this;
+    }
+
+    Matrix operator/(const double n) {
+      Matrix res = *this;
+      res /= n;
+      return res;
+    }
+
     /*
      * Linear Algebra Methods:
      * 
@@ -145,6 +166,10 @@ template <typename Type> class Matrix {
       return res;
     }
 
+    Matrix T() const {
+      return (*this).transpose();
+    }
+
     /*
      * Getter functions
      */
@@ -163,6 +188,14 @@ template <typename Type> class Matrix {
 
     std::tuple<std::size_t, std::size_t> get_shape() const {
       return std::make_tuple(rows, cols);
+    }
+
+    /*
+     * Setter functions
+     */
+
+    void set_data(int i, Type n) {
+      data[i] = n;
     }
 };
 
