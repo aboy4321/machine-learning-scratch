@@ -58,8 +58,14 @@ template <typename Type> class Matrix {
       return data[row * cols + col];
     }
 
-    // basic operators for matrix arithmetic
+    /*
+     * Basic Operators for Matrix arithemetic:
+     * Addition
+     * Subtraction
+     * Scalar Multiplication
+     */
 
+    // Modification by addition
     Matrix& operator+=(const Matrix& other) {
       assert(rows == other.rows && cols == other.cols);
       for (size_t i = 0; i < data.size(); ++i) {
@@ -68,13 +74,14 @@ template <typename Type> class Matrix {
       return *this;
     }
 
-    // Creates another matrix 
+    // Creates another matrix via addition
     Matrix operator+(const Matrix& other) const {
       Matrix res = *this;
       res += other;
       return res;
     }
 
+    // Modification by subtraction
     Matrix& operator-=(const Matrix& other) {
       assert(rows == other.rows && cols == other.cols);
       for (size_t i = 0; i < data.size(); ++i) {
@@ -83,13 +90,35 @@ template <typename Type> class Matrix {
       return *this;
     }
 
+    // Creates another matrix via subtraction
     Matrix operator-(const Matrix& other) const {
       Matrix res = *this;
       res -= other;
       return res;
     }
 
-    // linear algebra methods/operations
+    // Modification by scalar multiplication 
+    Matrix operator*=(const double n) {
+      for (std::size_t i = 0; i < data.size(); ++i) {
+        data[i] *= n;
+      }
+      return *this;
+    }
+
+    // Creates another matrix via scalar multiplication
+    Matrix operator*(const double n) const {
+      Matrix res = *this;
+      res *= n;
+      return res;
+    }
+
+    /*
+     * Linear Algebra Methods:
+     * 
+     * Matrix Multiplication
+     * Transposing of Matrix
+     *
+     */
     
     // multiplies matrices
     Matrix operator*(const Matrix& other) const {
@@ -116,13 +145,20 @@ template <typename Type> class Matrix {
       return res;
     }
 
-    // getter functions
+    /*
+     * Getter functions
+     */
+
     std::size_t get_rows() const {
       return rows;
     }
 
     std::size_t get_cols() const {
       return cols;
+    }
+    
+    std::size_t get_size() const {
+      return rows * cols;
     }
 
     std::tuple<std::size_t, std::size_t> get_shape() const {
