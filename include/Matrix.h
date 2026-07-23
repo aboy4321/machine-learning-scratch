@@ -1,17 +1,16 @@
+#pragma once
+
 #include <vector>
 #include <string>
 #include <iostream>
-#include <map>
 #include <tuple>
 #include <cassert>
 
-template <typename Type>
-class Matrix {
+template <typename Type> class Matrix {
   private:
     std::size_t rows, cols;
-    std::tuple<std::size_t, std::size_t> shape;
+
   public:
-    
     std::vector<Type> data;
     // constructors
 
@@ -19,21 +18,19 @@ class Matrix {
     Matrix(std::size_t rows, std::size_t cols)
       : rows(rows), cols(cols), data({}) {
       data.resize(rows * cols, Type());
-      shape = {rows, cols};
     }
 
     // creates matrix filled with inputted values
     Matrix(std::size_t rows, std::size_t cols, Type val)
       : rows(rows), cols(cols), data({}) {
       data.resize(rows * cols, val);
-      shape = {rows, cols};
       }
 
     // creates matrix from inputted vector
     Matrix(std::vector<Type> arr);
 
     // no params constructor
-    Matrix() : rows(0), cols(0), data({}) { shape = {rows, cols}; }
+    Matrix() : rows(0), cols(0), data({}) {}
 
     // printing shape of matrix 
     void print_shape() const {
@@ -64,7 +61,7 @@ class Matrix {
     // basic operators for matrix arithmetic
 
     Matrix& operator+=(const Matrix& other) {
-      assert(shape == other.shape);
+      assert(rows == other.rows && cols == other.cols);
       for (size_t i = 0; i < data.size(); ++i) {
         data[i] += other.data[i];
       }
@@ -79,7 +76,7 @@ class Matrix {
     }
 
     Matrix& operator-=(const Matrix& other) {
-      assert(shape == other.shape);
+      assert(rows == other.rows && cols == other.cols);
       for (size_t i = 0; i < data.size(); ++i) {
         data[i] -= other.data[i];
       }
@@ -127,22 +124,9 @@ class Matrix {
     std::size_t get_cols() const {
       return cols;
     }
+
+    std::tuple<std::size_t, std::size_t> get_shape() const {
+      return std::make_tuple(rows, cols);
+    }
 };
 
-int main() {
-  Matrix<int> M(3,3);
-  Matrix<int> Two(2, 2, 2);
-  Matrix<int> N;
-  int n = M.data.size();
-  for (int i = 0; i < n; i++) {
-    M.data[i] = i;
-  }
-  M.print();
-  Matrix<int> T = M.transpose();
-  T.print();
-
-  Matrix<int> O = M * M * M;
-
-  O.print();
-  return 0;
-}
