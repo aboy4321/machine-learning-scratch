@@ -9,11 +9,10 @@ template <typename Type>
 class Matrix {
   private:
     std::size_t rows, cols;
-
-  public:
-    std::vector<Type> data;
     std::tuple<std::size_t, std::size_t> shape;
+  public:
     
+    std::vector<Type> data;
     // constructors
 
     // default constructor
@@ -93,10 +92,10 @@ class Matrix {
       return res;
     }
 
-    // linear algebra methods
+    // linear algebra methods/operations
     
-    // multiplies matrices 
-    Matrix mat_mult(Matrix& other) {
+    // multiplies matrices
+    Matrix operator*(const Matrix& other) const {
       assert(cols == other.rows);
       Matrix res(rows, other.cols);
       for (int i = 0; i < res.rows; ++i) {
@@ -108,7 +107,6 @@ class Matrix {
       }
       return res;
     }
-
 
     // tranposes the matrix
     Matrix transpose() const {
@@ -143,7 +141,7 @@ int main() {
   Matrix<int> T = M.transpose();
   T.print();
 
-  Matrix<int> O = M.mat_mult(T);
+  Matrix<int> O = M * M * M;
 
   O.print();
   return 0;
