@@ -32,22 +32,26 @@ template <typename Type> class Matrix {
     // no params constructor
     Matrix() : rows(0), cols(0), data({}) {}
 
+    /*
+     * Some basic matrices
+     * Zero
+     * Ones
+     * Identity
+     * Diagonal
+    */
+
     static Matrix zeros(std::size_t rows, std::size_t cols) {
-      return Matrix(rows, cols, 0);
+      return Matrix(rows, cols, Type{});
     }
 
     static Matrix ones(std::size_t rows, std::size_t cols) {
-      return Matrix(rows, cols, 1);
+      return Matrix(rows, cols, Type{1});
     }
 
     static Matrix identity(std::size_t dim) {
-      Matrix<int> res(dim, dim);
-      for (int i = 0; i < dim; ++i) {
-        for (int j = 0; j < dim; ++j) {
-          if (i == j) {
-            res(i,j) = 1;
-          }
-        }
+      Matrix<Type> res(dim, dim);
+      for (std::size_t i = 0; i < dim; ++i) {
+            res(i,i) = Type{1};
       }
       return res;
     }
@@ -55,12 +59,8 @@ template <typename Type> class Matrix {
     static Matrix diagonal(std::vector<Type> arr) {
       std::size_t dim = arr.size();
       Matrix<Type> res(dim, dim);
-      for (int i = 0; i < dim; ++i) {
-        for (int j = 0; j < dim; ++j) {
-          if (i == j) {
-            res(i,j) = arr[i];
-          }
-        }
+      for (std::size_t i = 0; i < dim; ++i) {
+            res(i,i) = arr[i];
       }
       return res;
     }
@@ -88,6 +88,16 @@ template <typename Type> class Matrix {
     // only reads variable
     const Type& operator()(std::size_t row, std::size_t col) const {
       return data[row * cols + col];
+    }
+
+    bool operator==(const Matrix& other) const {
+      return (*this).data == other.data
+          && (*this).rows == other.rows
+          && (*this).cols == other.cols;
+    }
+
+    bool operator!=(const Matrix& other) const {
+      return !(*this == other);
     }
 
     /*
@@ -130,7 +140,7 @@ template <typename Type> class Matrix {
     }
 
     // Modification by scalar multiplication 
-    Matrix operator*=(const double n) {
+    Matrix& operator*=(const double n) {
       for (std::size_t i = 0; i < data.size(); ++i) {
         data[i] *= n;
       }
@@ -152,7 +162,7 @@ template <typename Type> class Matrix {
       return *this;
     }
 
-    Matrix operator/(const double n) {
+    Matrix operator/(const double n) const {
       Matrix res = *this;
       res /= n;
       return res;
@@ -170,9 +180,9 @@ template <typename Type> class Matrix {
     Matrix operator*(const Matrix& other) const {
       assert(cols == other.rows);
       Matrix res(rows, other.cols);
-      for (int i = 0; i < res.rows; ++i) {
-        for (int j = 0; j < res.cols; ++j) {
-          for (int k =0; k < other.rows; ++k) {
+      for (std::size_t i = 0; i < res.rows; ++i) {
+        for (std::size_t j = 0; j < res.cols; ++j) {
+          for (std::size_t k =0; k < other.rows; ++k) {
             res(i, j) += (*this)(i, k) * other(k, j);
           }
         }
@@ -219,7 +229,7 @@ template <typename Type> class Matrix {
      * Setter functions
      */
 
-    void set_data(int i, Type n) {
+    void set_data(std::size_t i, Type n) {
       data[i] = n;
     }
 };
