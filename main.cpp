@@ -24,5 +24,8 @@ int main() {
 
   auto Ones = Matrix<float>::identity(4);
   Ones.print();
+  Matrix<int> D(4,4);
+  D.fill(5);
+  D.print();
   return 0;
 }

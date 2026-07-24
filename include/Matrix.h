@@ -82,11 +82,13 @@ template <typename Type> class Matrix {
 
     // modifies matrix entry
     Type& operator()(std::size_t row, std::size_t col) {
+      assert(row <= rows && col <= cols);
       return data[row * cols + col];
     }
 
     // only reads variable
     const Type& operator()(std::size_t row, std::size_t col) const {
+      assert(row <= rows && col <= cols);
       return data[row * cols + col];
     }
 
@@ -229,7 +231,17 @@ template <typename Type> class Matrix {
      */
 
     void set_data(std::size_t i, Type n) {
+      assert(0 <= i && i <= data.size());
       data[i] = n;
     }
-};
 
+    bool is_empty() const {
+      return data.is_empty();
+    }
+
+    void fill(Type T) {
+      for (std::size_t i = 0; i < data.size(); ++i) {
+        data[i] = T;
+      }
+    }
+};
