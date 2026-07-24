@@ -56,7 +56,7 @@ template <typename Type> class Matrix {
       return res;
     }
 
-    static Matrix diagonal(std::vector<Type> arr) {
+    static Matrix diagonal(std::vector<Type>& arr) {
       std::size_t dim = arr.size();
       Matrix<Type> res(dim, dim);
       for (std::size_t i = 0; i < dim; ++i) {
@@ -104,7 +104,7 @@ template <typename Type> class Matrix {
      * Basic Operators for Matrix arithemetic:
      * Addition
      * Subtraction
-     * Scalar Multiplication
+     * Type Multiplication
      */
 
     // Modification by addition
@@ -139,8 +139,7 @@ template <typename Type> class Matrix {
       return res;
     }
 
-    // Modification by scalar multiplication 
-    Matrix& operator*=(const double n) {
+    Matrix& operator*=(const Type n) {
       for (std::size_t i = 0; i < data.size(); ++i) {
         data[i] *= n;
       }
@@ -148,21 +147,21 @@ template <typename Type> class Matrix {
     }
 
     // Creates another matrix via scalar multiplication
-    Matrix operator*(const double n) const {
+    Matrix operator*(const Type n) const {
       Matrix res = *this;
       res *= n;
       return res;
     }
 
     // and below is scalar division
-    Matrix operator/=(const double n) {
+    Matrix& operator/=(const Type n) {
       for (std::size_t i = 0; i < data.size(); ++i) {
         data[i] /= n;
       }
       return *this;
     }
 
-    Matrix operator/(const double n) const {
+    Matrix operator/(const Type n) const {
       Matrix res = *this;
       res /= n;
       return res;
