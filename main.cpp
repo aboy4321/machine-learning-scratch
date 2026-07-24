@@ -25,12 +25,12 @@ int main() {
 
   auto Ones = Matrix<float>::identity(4);
   Ones.print();
-  Matrix<double> D(4,4);
-  D.fill(1);
+  Matrix<int> D(4,4);
+  D.fill(9);
   D.print();
-  auto DSquared = MatrixMath::sqrt(D);
-  DSquared.print();
-  auto DExpo = MatrixMath::exp(D);
-  DExpo.print();
+  auto DPow = MatrixMath::pow(D, 3.00);
+  DPow.print();
+  auto DLog = MatrixMath::log(D);
+  DLog.print();
   return 0;
 }
