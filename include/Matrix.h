@@ -39,6 +39,31 @@ template <typename Type> class Matrix {
     static Matrix ones(std::size_t rows, std::size_t cols) {
       return Matrix(rows, cols, 1);
     }
+
+    static Matrix identity(std::size_t dim) {
+      Matrix<int> res(dim, dim);
+      for (int i = 0; i < dim; ++i) {
+        for (int j = 0; j < dim; ++j) {
+          if (i == j) {
+            res(i,j) = 1;
+          }
+        }
+      }
+      return res;
+    }
+
+    static Matrix diagonal(std::vector<Type> arr) {
+      std::size_t dim = arr.size();
+      Matrix<Type> res(dim, dim);
+      for (int i = 0; i < dim; ++i) {
+        for (int j = 0; j < dim; ++j) {
+          if (i == j) {
+            res(i,j) = arr[i];
+          }
+        }
+      }
+      return res;
+    }
     // printing shape of matrix 
     void print_shape() const {
       std::cout << "Shape : (" << rows << ", " << cols << ")" << std::endl;
