@@ -106,7 +106,7 @@ template <typename Type> class Matrix {
      * Basic Operators for Matrix arithemetic:
      * Addition
      * Subtraction
-     * Type Multiplication
+     * Scalar Multiplication
      */
 
     // Modification by addition
@@ -218,7 +218,7 @@ template <typename Type> class Matrix {
       return cols;
     }
     
-    std::size_t get_size() const {
+    std::size_t size() const {
       return rows * cols;
     }
 
@@ -227,8 +227,15 @@ template <typename Type> class Matrix {
     }
 
     /*
-     * Setter functions
+     * Setter functions and quality of life stuff idk
      */
+    Type& operator[](std::size_t i) {
+        return data[i];
+    }
+
+    const Type& operator[](std::size_t i) const {
+        return data[i];
+    }
 
     void set_data(std::size_t i, Type n) {
       assert(0 <= i && i <= data.size());
