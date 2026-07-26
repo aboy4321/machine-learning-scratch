@@ -26,9 +26,9 @@ int main() {
   auto Ones = Matrix<float>::identity(4);
   Ones.print();
   Matrix<int> D(4,4);
-  D.fill(-9);
+  D.fill(5);
   D.print();
-  auto Dnu = MatrixMath::abs(D);
+  auto Dnu = MatrixMath::sqrt(D);
   Dnu.print();
   return 0;
 }
