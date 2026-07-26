@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Matrix.h"
+#include <Matrix.h>
 #include <cmath>
 
-namespace MatrixMath {
+namespace nerd {
 
 // for getting the square root of an entire matrix
 template <typename Type>

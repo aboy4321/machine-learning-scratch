@@ -5,6 +5,10 @@
 #include <iostream>
 #include <tuple>
 #include <cassert>
+#include <iterator>
+#include <cstddef>
+
+namespace nerd {
 
 template <typename Type> class Matrix {
   private:
@@ -12,7 +16,15 @@ template <typename Type> class Matrix {
     std::vector<Type> data;
 
   public:
-    // constructors
+
+    auto begin() { return data.begin(); }
+    auto end() { return data.end(); }
+
+    auto begin() const { return data.begin(); }
+    auto end() const { return data.end(); }
+    /* 
+     * Basic Constructors
+     */
 
     // default constructor
     Matrix(std::size_t rows, std::size_t cols)
@@ -252,3 +264,5 @@ template <typename Type> class Matrix {
       }
     }
 };
+
+}
