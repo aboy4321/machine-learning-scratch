@@ -26,11 +26,9 @@ int main() {
   auto Ones = Matrix<float>::identity(4);
   Ones.print();
   Matrix<int> D(4,4);
-  D.fill(9);
+  D.fill(-9);
   D.print();
-  auto DPow = MatrixMath::pow(D, 3.00);
-  DPow.print();
-  auto DLog = MatrixMath::log(D);
-  DLog.print();
+  auto Dnu = MatrixMath::abs(D);
+  Dnu.print();
   return 0;
 }
