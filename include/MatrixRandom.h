@@ -10,12 +10,20 @@ std::mt19937 gen(rd());
 
 namespace nerd {
 
-static Matrix<double unif(const double low = 0.0, const double high = 0.0, std::size_t dim) {
+Matrix<double> unifloat(std::size_t dim, const double low = 0.0, const double high = 1.0)  {
   Matrix<double> res(dim, dim);
   std::uniform_real_distribution<double> dist(low, high);
-  double random_double = dist(gen);
-  for (std::size_t i = 0; i < dim; ++i) {
-    res[i] = dist(gen);
+  for (double& x : res) {
+    x = dist(gen);
+  }
+  return res;
+}
+
+Matrix<int> unifint(std::size_t dim, const int low = 0, const int high = 1)  {
+  Matrix<int> res(dim, dim);
+  std::uniform_int_distribution<int> dist(low, high);
+  for (int x : res) {
+    x = dist(gen);
   }
   return res;
 }

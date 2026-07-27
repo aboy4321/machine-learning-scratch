@@ -149,8 +149,8 @@ template <typename Type> class Matrix {
     }
 
     Matrix& operator*=(const Type& n) {
-      for (std::size_t i = 0; i < data.size(); ++i) {
-        data[i] *= n;
+      for (Type& x : data) {
+        x *= n;
       }
       return *this;
     }
@@ -164,8 +164,8 @@ template <typename Type> class Matrix {
 
     // and below is scalar division
     Matrix& operator/=(const Type& n) {
-      for (std::size_t i = 0; i < data.size(); ++i) {
-        data[i] /= n;
+      for (Type& x : data) {
+        x /= n;
       }
       return *this;
     }
@@ -190,7 +190,7 @@ template <typename Type> class Matrix {
       Matrix res(rows, other.cols);
       for (std::size_t i = 0; i < res.rows; ++i) {
         for (std::size_t j = 0; j < res.cols; ++j) {
-          for (std::size_t k =0; k < other.rows; ++k) {
+          for (std::size_t k =0; k < cols; ++k) {
             res(i, j) += (*this)(i, k) * other(k, j);
           }
         }
@@ -242,11 +242,6 @@ template <typename Type> class Matrix {
 
     const Type& operator[](std::size_t i) const {
         return data[i];
-    }
-
-    void set_data(std::size_t i, Type n) {
-      assert( i < data.size());
-      data[i] = n;
     }
 
     bool empty() const {
