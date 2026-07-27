@@ -1,8 +1,5 @@
 #pragma once
 
-#include <Matrix.h>
-#include <MatrixFunction.h>
-#include <cmath>
 #include <numeric>
 #include <execution>
 
@@ -47,7 +44,14 @@ Type min(const Matrix<Type>& M) {
   auto min_it = std::min_element(M.begin(), M.end());
   int min_val_stl = *min_it;
   return min_val_stl;
-
 }
-  
+
+template <typename Type>
+Type max(const Matrix<Type>& M) {
+  auto max_it = std::max_element(M.begin(), M.end());
+  int max_val_stl = *max_it;
+  return max_val_stl;
+} 
+
+
 }

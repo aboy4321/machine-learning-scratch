@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vector>
-#include <string>
 #include <iostream>
 #include <tuple>
 #include <cassert>
@@ -258,6 +257,14 @@ template <typename Type> class Matrix {
       for (auto& x : data) {
         x = T;
       }
+    }
+
+    bool is_square() {
+      return rows == cols;
+    }
+
+    bool is_symmetric() {
+      return (*this) == (*this).T();
     }
 };
 
