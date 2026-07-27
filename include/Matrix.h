@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Shape.h>
 #include <vector>
 #include <iostream>
 #include <tuple>
@@ -9,9 +10,10 @@
 
 namespace nerd {
 
-template <typename Type> class Matrix {
+template <typename Type> 
+class Matrix {
   private:
-    std::size_t rows, cols;
+    Shape shape;
     std::vector<Type> data;
 
   public:
@@ -26,18 +28,19 @@ template <typename Type> class Matrix {
      */
 
     // default constructor
-    Matrix(std::size_t rows, std::size_t cols)
-      : rows(rows), cols(cols), data(rows * cols) {}
+    Matrix(const Shape shape)
+      : shape(shape), data(shape.size()) {
+        assert(shape.is_matrix());
+      }
 
     // creates matrix filled with inputted values
-    Matrix(std::size_t rows, std::size_t cols, Type val)
-      : rows(rows), cols(cols), data(rows * cols, val) {}
+    Matrix(const Shape shape, const Type val)
+      : shape(shape), data(shape.size(), val) {
+        assert(shape.is_matrix());
+      }
 
     // creates matrix from inputted vector
     Matrix(std::vector<Type> arr);
-
-    // no params constructor
-    Matrix() : rows(0), cols(0), data({}) {}
 
     /*
      * Some basic matrices
@@ -47,25 +50,25 @@ template <typename Type> class Matrix {
      * Diagonal
     */
 
-    static Matrix zeros(std::size_t rows, std::size_t cols) {
-      return Matrix(rows, cols, Type{});
+    static Matrix zeros(const Shape shape) {
+      return Matrix(shape, Type{});
     }
 
-    static Matrix ones(std::size_t rows, std::size_t cols) {
-      return Matrix(rows, cols, Type{1});
+    static Matrix ones(const Shape shape) {
+      return Matrix(shape, Type{1});
     }
 
-    static Matrix identity(std::size_t dim) {
-      Matrix<Type> res(dim, dim);
+    static Matrix identity(const std::size_t dim) {
+      Matrix<Type> res({dim, dim});
       for (std::size_t i = 0; i < dim; ++i) {
             res(i,i) = Type{1};
       }
       return res;
     }
 
-    static Matrix diagonal(std::vector<Type>& arr) {
+    static Matrix diagonal(const std::vector<Type>& arr) {
       std::size_t dim = arr.size();
-      Matrix<Type> res(dim, dim);
+      Matrix<Type> res({dim, dim});
       for (std::size_t i = 0; i < dim; ++i) {
             res(i,i) = arr[i];
       }
@@ -73,13 +76,13 @@ template <typename Type> class Matrix {
     }
     // printing shape of matrix 
     void print_shape() const {
-      std::cout << "Shape : (" << rows << ", " << cols << ")" << std::endl;
+      std::cout << "shape : (" << shape[0] << ", " << shape[1] << ")" << std::endl;
     }
 
     // printing contents of matrix
     void print() const {
-      for (std::size_t i = 0; i < rows; ++i) {
-        for (std::size_t j = 0; j < cols; ++j) {
+      for (std::size_t i = 0; i < shape[0]; ++i) {
+        for (std::size_t j = 0; j < shape[1]; ++j) {
           std::cout << (*this)(i,j) << ",";
         }
         std::cout << std::endl;
@@ -89,20 +92,19 @@ template <typename Type> class Matrix {
 
     // modifies matrix entry
     Type& operator()(std::size_t row, std::size_t col) {
-      assert(row < rows && col < cols);
-      return data[row * cols + col];
+      assert(row < shape[0] && col < shape[1]);
+      return data[row * shape[1] + col];
     }
 
     // only reads variable
     const Type& operator()(std::size_t row, std::size_t col) const {
-      assert(row < rows && col < cols);
-      return data[row * cols + col];
+      assert(row < shape[0] && col < shape[1]);
+      return data[row * shape[1] + col];
     }
 
     bool operator==(const Matrix& other) const {
       return data == other.data
-          && rows == other.rows
-          && cols == other.cols;
+          && same_shape(other);
     }
 
     bool operator!=(const Matrix& other) const {
@@ -118,7 +120,7 @@ template <typename Type> class Matrix {
 
     // Modification by addition
     Matrix& operator+=(const Matrix& other) {
-      assert(rows == other.rows && cols == other.cols);
+      assert(same_shape(other));
       for (size_t i = 0; i < data.size(); ++i) {
         data[i] += other.data[i];
       }
@@ -134,7 +136,7 @@ template <typename Type> class Matrix {
 
     // Modification by subtraction
     Matrix& operator-=(const Matrix& other) {
-      assert(rows == other.rows && cols == other.cols);
+      assert(same_shape(other));
       for (size_t i = 0; i < data.size(); ++i) {
         data[i] -= other.data[i];
       }
@@ -186,11 +188,11 @@ template <typename Type> class Matrix {
     
     // multiplies matrices
     Matrix operator*(const Matrix& other) const {
-      assert(cols == other.rows);
-      Matrix res(rows, other.cols);
-      for (std::size_t i = 0; i < res.rows; ++i) {
-        for (std::size_t j = 0; j < res.cols; ++j) {
-          for (std::size_t k =0; k < cols; ++k) {
+      assert(can_multiply(other));
+      Matrix res({shape[0], other.shape[1]});
+      for (std::size_t i = 0; i < res.shape[0]; ++i) {
+        for (std::size_t j = 0; j < res.shape[1]; ++j) {
+          for (std::size_t k =0; k < shape[1]; ++k) {
             res(i, j) += (*this)(i, k) * other(k, j);
           }
         }
@@ -200,17 +202,13 @@ template <typename Type> class Matrix {
 
     // tranposes the matrix
     Matrix transpose() const {
-      Matrix res(cols, rows);
-      for (std::size_t i = 0; i < rows; ++i) {
-        for (std::size_t j = 0; j < cols; ++j) {
+      Matrix res({shape[1], shape[0]});
+      for (std::size_t i = 0; i < shape[0]; ++i) {
+        for (std::size_t j = 0; j < shape[1]; ++j) {
           res(j, i) = (*this)(i, j);
         }
       }
       return res;
-    }
-
-    Matrix T() const {
-      return transpose();
     }
 
     /*
@@ -218,29 +216,31 @@ template <typename Type> class Matrix {
      */
 
     std::size_t get_rows() const {
-      return rows;
+      return shape[0];
     }
 
     std::size_t get_cols() const {
-      return cols;
+      return shape[1];
     }
     
     std::size_t size() const {
       return data.size();
     }
 
-    std::tuple<std::size_t, std::size_t> get_shape() const {
-      return std::make_tuple(rows, cols);
+    const Shape& get_shape() const {
+      return shape;
     }
 
     /*
      * Setter functions and quality of life stuff idk
      */
     Type& operator[](std::size_t i) {
+        assert(i < data.size());
         return data[i];
     }
 
     const Type& operator[](std::size_t i) const {
+        assert(i < data.size());
         return data[i];
     }
 
@@ -254,13 +254,20 @@ template <typename Type> class Matrix {
       }
     }
 
-    bool is_square() {
-      return rows == cols;
+    bool is_square() const {
+      return shape.is_square();
     }
 
-    bool is_symmetric() {
-      return (*this) == (*this).T();
+    bool is_symmetric() const {
+      return (*this) == (*this).transpose();
+    }
+
+    bool same_shape(const Matrix& other) const {
+      return shape == other.shape;
+    }
+
+    bool can_multiply(const Matrix& other) const {
+      return shape[1] == other.shape[0];
     }
 };
-
 }

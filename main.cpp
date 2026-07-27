@@ -1,3 +1,4 @@
+#include <Shape.h>
 #include <Matrix.h>
 #include <MatrixMath.h>
 #include <MatrixStats.h>
@@ -5,15 +6,18 @@
 #include <iostream>
 
 int main() {
-  nerd::Matrix<int> D(3,3);
+  nerd::Matrix<int> D(nerd::Shape{3,3});
   for (int i = 0; i < D.size(); i++) {
     D[i] = i;
   }
+  D.print();
+  /*
   auto Unif = nerd::unifint(4, 3, 0);
   Unif.print();
 
   std::cout << nerd::stdev(D) << std::endl;
   std::cout << nerd::var(D) << std::endl;
+  */
 
   /*
   std::cout << nerd::sum(D) << std::endl;
