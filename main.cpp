@@ -9,8 +9,7 @@ int main() {
   for (int i = 0; i < D.size(); i++) {
     D[i] = i;
   }
-  D.print();
-  auto Unif = nerd::unifint(4, 2, 4);
+  auto Unif = nerd::unifint(4, 3, 0);
   Unif.print();
 
   std::cout << nerd::stdev(D) << std::endl;
