@@ -1,5 +1,5 @@
 #include <Matrix.h>
-#include <MatrixFunction.h>
+#include <MatrixMath.h>
 #include <MatrixStats.h>
 #include <iostream>
 
