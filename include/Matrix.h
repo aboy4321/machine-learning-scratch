@@ -23,6 +23,7 @@ class Matrix {
 
     auto begin() const { return data.begin(); }
     auto end() const { return data.end(); }
+
     /* 
      * Basic Constructors
      */
@@ -39,9 +40,18 @@ class Matrix {
         assert(shape.is_matrix());
       }
 
-    // creates matrix from inputted vector
-    Matrix(std::vector<Type> arr);
+    Matrix(std::initializer_list<std::initializer_list<Type>> values)
+      : shape({values.size(), values.begin()->size()}) {
+        assert(values.size() > 0);
 
+        std::size_t cols = values.begin()->size();
+
+        for (const auto& row : values) {
+            assert(row.size() == cols);
+
+            data.insert(data.end(), row.begin(), row.end());
+        }
+      }
     /*
      * Some basic matrices
      * Zero
@@ -73,10 +83,6 @@ class Matrix {
             res(i,i) = arr[i];
       }
       return res;
-    }
-    // printing shape of matrix 
-    void print_shape() const {
-      std::cout << "shape : (" << shape[0] << ", " << shape[1] << ")" << std::endl;
     }
 
     // printing contents of matrix
@@ -179,11 +185,9 @@ class Matrix {
     }
 
     /*
-     * Linear Algebra Methods:
-     * 
+     * Very Basic Linear Algebra Methods:
      * Matrix Multiplication
      * Transposing of Matrix
-     *
      */
     
     // multiplies matrices

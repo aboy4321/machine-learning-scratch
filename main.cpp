@@ -6,29 +6,12 @@
 #include <iostream>
 
 int main() {
-  nerd::Matrix<int> D(nerd::Shape{3,3});
-  for (int i = 0; i < D.size(); i++) {
-    D[i] = i;
-  }
-  D.print();
-  /*
-  auto Unif = nerd::unifint(4, 3, 0);
+  nerd::Matrix<float> D({{0,1,2,3},
+                         {4,5,6,7}});
+
+  auto Unif = nerd::unifint({4,3}, 0);
   Unif.print();
 
-  std::cout << nerd::stdev(D) << std::endl;
-  std::cout << nerd::var(D) << std::endl;
-  */
-
-  /*
-  std::cout << nerd::sum(D) << std::endl;
-  std::cout << nerd::mean(D) << std::endl;
-  std::cout << nerd::stdev(D) << std::endl;
-  std::cout << nerd::var(D) << std::endl;
-  std::cout << nerd::min(D) << std::endl;
-  std::cout << nerd::max(D) << std::endl;
-  std::cout << D.is_square() << std::endl;
-  std::cout << D.is_symmetric() << std::endl;
-  D.print();
-  */
   return 0;
+
 }
