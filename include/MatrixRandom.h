@@ -28,4 +28,13 @@ Matrix<int> unifint(Shape shape, const int low = 0, const int high = 1)  {
   return res;
 }
 
+Matrix<double> norm(Shape shape, const float mean = 0, const float stdev = 1) {
+  Matrix <double> res(shape);
+  std::normal_distribution<double> dist(mean, stdev);
+  for (double& x : res) {
+    x = dist(gen);
+  }
+  return res;
+}
+
 }
