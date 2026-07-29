@@ -219,16 +219,20 @@ class Matrix {
      * Getter functions
      */
 
-    std::size_t get_rows() const {
+    std::size_t rows() const {
       return shape[0];
     }
 
-    std::size_t get_cols() const {
+    std::size_t cols() const {
       return shape[1];
     }
     
     std::size_t size() const {
       return data.size();
+    }
+
+    const std::vector<Type> values() const {
+      return data;
     }
 
     const Shape& get_shape() const {
@@ -247,15 +251,14 @@ class Matrix {
         assert(i < data.size());
         return data[i];
     }
-
-    bool empty() const {
-      return data.empty();
-    }
-
     void fill(const Type& T) {
       for (auto& x : data) {
         x = T;
       }
+    }
+
+    bool empty() const {
+      return data.empty();
     }
 
     bool is_square() const {
