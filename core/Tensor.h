@@ -3,6 +3,7 @@
 #include <Shape.h>
 #include <vector>
 #include <cassert>
+#include <iostream>
 
 namespace nerd {
 
@@ -11,15 +12,30 @@ class Tensor {
   private:
     Shape shape;
     std::vector<Type> data;
+    Shape strides;
+    // std::vector<size_t> strides;
 
+    /*
     std::vector<std::size_t> compute_strides() {
-      std::vector<std::size_t> strides(shape.rank());
-      for (std::size_t i = shape.rank() - 2; i > 0; --i) {
-        strides[i] = strides[i+1] * shape[i+1];
+      std::vector<std::size_t> strides(shape.rank(), 1);
+
+      for (int i = shape.rank() - 2; i >= 0; --i ) {
+        strides[i] = strides[i + 1] * shape[i + 1];
       }
+
       return strides;
     }
+    */
 
+    Shape compute_strides() {
+      Shape strides(shape.rank());
+
+      for (int i = shape.rank() - 2; i >= 0; --i ) {
+        strides[i] = strides[i + 1] * shape[i + 1];
+      }
+
+      return strides;
+    }
   public:
 
     Tensor() = default;
@@ -29,7 +45,6 @@ class Tensor {
         strides = compute_strides();
       } 
   
-
     Type& operator[](std::size_t i) {
       assert(i < data.size());
       return data[i];
@@ -39,6 +54,13 @@ class Tensor {
       assert(i < data.size());
       return data[i];
     }
+
+    /*
+    Type& operator()(std::vector<std::size_t>& index) {
+      assert(index.size() == shape.rank());
+      return data[]
+    }
+    */
 
     /*
      * Iterators
@@ -81,9 +103,17 @@ class Tensor {
       return shape;
     }
 
-    const std::vector<std::size_t>& get_strides() const {
+    /*
+    const std::vector<std::size_t> get_strides() const {
       return strides;
     }
+    */
+
+    const Shape get_strides() const {
+      return strides;
+    }
+
+
     // return size of tensor/number of elements 
     std::size_t size() const {
       return shape.size();

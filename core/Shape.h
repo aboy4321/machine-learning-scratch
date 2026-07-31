@@ -14,11 +14,18 @@ class Shape {
   public:
     Shape() = default;
     Shape(std::initializer_list<std::size_t> dim) : dim(dim) {}
+    Shape(std::size_t rank) : dim(rank, 1) {}
 
-    std::size_t operator[](std::size_t i) const {
+    std::size_t& operator[](std::size_t i) {
       assert(i < dim.size());
       return dim[i];
     }
+
+    const std::size_t& operator[](std::size_t i) const {
+      assert(i < dim.size());
+      return dim[i];
+    }
+
 
     friend std::ostream& operator<<(std::ostream& os, const Shape& shape) {
       os << "{";

@@ -10,12 +10,13 @@ int main() {
   nerd::Matrix<float> D({{0,1,2,3},
                          {4,5,6,7}});
 
-  nerd::Tensor<int> T({2, 3, 4}, 1);
+  nerd::Tensor<int> T({2, 3, 4, 12}, 1);
 
   std::cout << T.get_shape() << std::endl;
-  for (auto x : T.get_strides()) {
-    std::cout << x << " ";
-  }
+  nerd::Shape stri = T.get_strides();
+
+  std::cout << stri << std::endl;
+
   std::cout << '\n';
   auto Unif = nerd::unifint({4,3});
   auto Norm = nerd::norm({1000, 1000});
