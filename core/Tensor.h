@@ -12,20 +12,7 @@ class Tensor {
   private:
     Shape shape;
     std::vector<Type> data;
-    Shape strides;
-    // std::vector<size_t> strides;
-
-    /*
-    std::vector<std::size_t> compute_strides() {
-      std::vector<std::size_t> strides(shape.rank(), 1);
-
-      for (int i = shape.rank() - 2; i >= 0; --i ) {
-        strides[i] = strides[i + 1] * shape[i + 1];
-      }
-
-      return strides;
-    }
-    */
+    Shape strides;    
 
     Shape compute_strides() {
       Shape strides(shape.rank());
@@ -36,6 +23,7 @@ class Tensor {
 
       return strides;
     }
+
   public:
 
     Tensor() = default;
@@ -94,6 +82,7 @@ class Tensor {
     bool same_shape(Tensor& other) {
       return shape == other.shape;
     }
+
     /* 
      * getter functions
      */ 
@@ -102,12 +91,6 @@ class Tensor {
     const Shape& get_shape() const {
       return shape;
     }
-
-    /*
-    const std::vector<std::size_t> get_strides() const {
-      return strides;
-    }
-    */
 
     const Shape get_strides() const {
       return strides;

@@ -47,14 +47,6 @@ class Shape {
         return dim.end();
     }
 
-    bool operator==(const Shape& other) const {
-        return dim == other.dim;
-    }
-
-    bool operator!=(const Shape& other) const {
-        return !(*this == other);
-    }
-
     std::size_t rank() const {
       return dim.size();
     }
@@ -66,6 +58,14 @@ class Shape {
         total *= d;
       }
       return total;
+    }
+
+    bool operator==(const Shape& other) const {
+        return dim == other.dim;
+    }
+
+    bool operator!=(const Shape& other) const {
+        return !(*this == other);
     }
 
     bool is_matrix() const {
