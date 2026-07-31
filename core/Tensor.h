@@ -11,22 +11,83 @@ class Tensor {
   private:
     Shape shape;
     std::vector<Type> data;
-    Shape stride;
+
+    std::vector<std::size_t> compute_strides() {
+      std::vector<std::size_t> strides(shape.rank());
+      for (std::size_t i = shape.rank() - 2; i > 0; --i) {
+        strides[i] = strides[i+1] * shape[i+1];
+      }
+      return strides;
+    }
 
   public:
-    Tensor(const Shape shape, std::vector<Type>& data)
-      : shape(shape), data(shape.size()) {}
 
-    Tensor(const Shape shape, Type val)
-      : shape(shape), data(shape.size(), val) {} 
+    Tensor() = default;
+
+    Tensor(const Shape& shape, const Type& val)
+      : shape(shape), data(shape.size(), val) {
+        strides = compute_strides();
+      } 
   
 
+    Type& operator[](std::size_t i) {
+      assert(i < data.size());
+      return data[i];
+    }
 
+    const Type& operator[](std::size_t i) const {
+      assert(i < data.size());
+      return data[i];
+    }
 
+    /*
+     * Iterators
+     */ 
 
-    Shape shape() {
+    auto begin() {
+      return data.begin();
+    }
+
+    auto end() {
+      return data.end();
+    }
+    auto begin() const {
+      return data.begin();
+    }
+
+    auto end() const {
+      return data.end();
+    }
+
+    void fill(const Type& T) {
+      for (auto& x : data) {
+        x = T;
+      }
+    }
+
+    bool empty() {
+      return data.empty();
+    }
+
+    bool same_shape(Tensor& other) {
+      return shape == other.shape;
+    }
+    /* 
+     * getter functions
+     */ 
+
+    // return shape of tensor
+    const Shape& get_shape() const {
       return shape;
     }
-}
+
+    const std::vector<std::size_t>& get_strides() const {
+      return strides;
+    }
+    // return size of tensor/number of elements 
+    std::size_t size() const {
+      return shape.size();
+    }
+};
   
 }
