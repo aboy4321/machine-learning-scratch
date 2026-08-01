@@ -3,6 +3,7 @@
 #include <Shape.h>
 #include <vector>
 #include <cassert>
+#include <cstddef> 
 #include <iostream>
 
 namespace nerd {
@@ -51,22 +52,17 @@ class Tensor {
     ) const
     {
         std::string spacing(indent, ' ');
-
         os << spacing << "[\n";
-
         // Last dimension: print values
         if (dim == shape.rank() - 1)
         {
             os << spacing << " ";
-
             for (std::size_t i = 0; i < shape[dim]; ++i)
             {
                 os << data[offset + i * strides[dim]];
-
                 if (i + 1 < shape[dim])
                     os << ", ";
             }
-
         }
         else
         {
@@ -78,12 +74,10 @@ class Tensor {
                     offset + i * strides[dim],
                     indent + 2
                 );
-
                 if (i + 1 < shape[dim])
                     os << ",\n";
             }
         }
-
         os << "\n" << spacing << "]";
     }
 
@@ -108,20 +102,32 @@ class Tensor {
         strides = compute_strides();
       } 
   
+    // returns tensor of 0s
     static Tensor zeros(const Shape& shape) {
       return Tensor(shape, 0);
     }
 
+    // returns tensors of 1s
     static Tensor ones(const Shape& shape) {
       return Tensor(shape, 1);
     }
 
+    // returns identity matrix
     static Tensor identity(std::size_t dim) {
       Tensor<Type> res(Shape{dim, dim});
       for (std::size_t i = 0; i < dim; ++i) {
         res.data[i * dim + i] = Type{1};
       }
+      return res;
+    }
 
+    // returns diagonal matrix of inputs
+    static Tensor diagonal(const std::vector<Type>& arr) {
+      std::size_t dim = arr.size();
+      Tensor<Type> res(Shape{dim, dim});
+      for (std::size_t i = 0; i < dim; ++i) {
+        res.data[i * dim + i] = arr[i];
+      }
       return res;
     }
 
@@ -157,9 +163,73 @@ class Tensor {
       return os;
     }
 
-  /*
-   * Iterators
-   */
+    /* 
+     * Tensor arithmetic
+     */
+
+    // Modification by addition
+    Tensor& operator+=(const Tensor& other) {
+      assert(same_shape(other));
+      for (std::size_t i = 0; i < data.size(); ++i) {
+        data[i] += other.data[i];
+      }
+      return *this;
+    }
+
+    // Creates another matrix via addition
+    Tensor operator+(const Tensor& other) const {
+      Tensor res = *this;
+      res += other;
+      return res;
+    }
+
+    // Modification by subtraction
+    Tensor& operator-=(const Tensor& other) {
+      assert(same_shape(other));
+      for (std::size_t i = 0; i < data.size(); ++i) {
+        data[i] -= other.data[i];
+      }
+      return *this;
+    }
+
+    // Creates another matrix via subtraction
+    Tensor operator-(const Tensor& other) const {
+      Tensor res = *this;
+      res -= other;
+      return res;
+    }
+
+    Tensor& operator*=(const Type& n) {
+      for (Type& x : data) {
+        x *= n;
+      }
+      return *this;
+    }
+
+    // Creates another matrix via scalar multiplication
+    Tensor operator*(const Type& n) const {
+      Tensor res = *this;
+      res *= n;
+      return res;
+    }
+
+    // and below is scalar division
+    Tensor& operator/=(const Type& n) {
+      for (Type& x : data) {
+        x /= n;
+      }
+      return *this;
+    }
+
+    Tensor operator/(const Type& n) const {
+      Tensor res = *this;
+      res /= n;
+      return res;
+    }
+
+    /*
+     *  Iterators
+     */
     auto begin() {
       return data.begin();
     }
@@ -185,7 +255,7 @@ class Tensor {
       return data.empty();
     }
 
-    bool same_shape(Tensor& other) {
+    bool same_shape(const Tensor& other) const {
       return shape == other.shape;
     }
 
@@ -201,7 +271,6 @@ class Tensor {
     const Shape get_strides() const {
       return strides;
     }
-
 
     // return size of tensor/number of elements 
     std::size_t size() const {

@@ -6,17 +6,17 @@
 namespace nerd {
 
 template <typename Type>
-double sum(const Matrix<Type>& M) {
+double sum(const Tensor<Type>& M) {
   return std::accumulate(M.begin(), M.end(), 0.0); 
 }
 
 template <typename Type>
-double mean(const Matrix<Type>& M) {
+double mean(const Tensor<Type>& M) {
   return sum(M) / M.size();
 }
 
 template <typename Type>
-double stdev(const Matrix<Type>& M) {
+double stdev(const Tensor<Type>& M) {
   double _mean = mean(M);
 
   double sqrd_diff_sum = 0.0;
@@ -28,7 +28,7 @@ double stdev(const Matrix<Type>& M) {
 }
 
 template <typename Type>
-double var(const Matrix<Type>& M) {
+double var(const Tensor<Type>& M) {
   double _mean = mean(M);
 
   double sqrd_diff_sum = 0.0;
@@ -40,13 +40,13 @@ double var(const Matrix<Type>& M) {
 }
 
 template <typename Type>
-Type min(const Matrix<Type>& M) {
+Type min(const Tensor<Type>& M) {
   auto min_it = std::min_element(M.begin(), M.end());
   return *min_it;
 }
 
 template <typename Type>
-Type max(const Matrix<Type>& M) {
+Type max(const Tensor<Type>& M) {
   auto max_it = std::max_element(M.begin(), M.end());
   return *max_it;
 } 

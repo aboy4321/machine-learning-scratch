@@ -51,6 +51,10 @@ class Shape {
       return dim.size();
     }
 
+    std::size_t ndim() const {
+      return rank();
+    }
+
     std::size_t size() const {
       if (dim.empty()) return 0;
       std::size_t total = 1;
