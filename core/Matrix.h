@@ -52,6 +52,7 @@ class Matrix {
             data.insert(data.end(), row.begin(), row.end());
         }
       }
+
     /*
      * Some basic matrices
      * Zero
