@@ -55,6 +55,10 @@ class Shape {
       dim.erase(std::remove(dim.begin(), dim.end(), 1), dim.end());
     }
 
+    void add(std::size_t index, std::size_t val) {
+      dim.insert(dim.begin() + index, val);
+    }
+
     std::size_t ndim() const {
       return rank();
     }

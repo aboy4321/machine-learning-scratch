@@ -40,12 +40,10 @@ class Tensor {
       assert(indices.size() == shape.rank());
 
       std::size_t index = 0;
-
       for (std::size_t i = 0; i < indices.size(); ++i) {
         assert(indices[i] < shape[i]);
         index += indices[i] * strides[i];
       }
-
       return index;
     }
 
@@ -239,7 +237,18 @@ class Tensor {
       return res;
     }
 
-    Tensor reshape(const Shape other) const {
+    Tensor m_transpose() const {
+      assert(ndim() == 2);
+      Tensor res(Shape{shape[1], shape[0]});
+      for (std::size_t i = 0; i < shape[1]; ++i) {
+        for (std::size_t j = 0; j < shape[0]; ++j) {
+          res({i, j}) = (*this)({j, i});
+        }
+      }
+      return res;
+    }
+
+    Tensor reshape(const Shape& other) const {
       assert(shape.size() == other.size());
       Tensor res = *this;
       res.shape = other;
@@ -249,13 +258,29 @@ class Tensor {
 
     Tensor flatten() const {
       return reshape({size()});
-
     }
 
     Tensor squeeze() const {
       Tensor res = *this;
       res.shape.remove();
       res.strides = res.compute_strides();
+      return res;
+    }
+
+    Tensor unsqueeze(std::size_t index) const {
+      Tensor res = *this;
+      res.shape.add(index, 1);
+      res.strides = res.compute_strides();
+      return res;
+    }
+
+    Tensor permute(const std::vector<std::size_t>& other) const {
+      assert(shape.rank() == other.size());
+      Tensor res(*this);
+      for (std::size_t i = 0; i < other.size(); ++i) {
+        res.shape[i] = this->shape[other[i]];
+        res.strides[i] = this->strides[other[i]];
+      }
       return res;
     }
 
@@ -270,6 +295,7 @@ class Tensor {
     auto end() {
       return data.end();
     }
+
     auto begin() const {
       return data.begin();
     }
@@ -286,7 +312,7 @@ class Tensor {
     }
 
     // Checks if a tensor has elements
-    bool empty() {
+    bool empty() const {
       return data.empty();
     }
 
@@ -305,8 +331,12 @@ class Tensor {
     }
 
     // Returns strides of a tensors dimensions
-    const Shape get_strides() const {
+    const Shape& get_strides() const {
       return strides;
+    }
+
+    std::size_t ndim() const {
+      return shape.ndim();
     }
 
     // Returns size of tensor/number of elements 

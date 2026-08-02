@@ -6,9 +6,10 @@
 #include <iostream>
 
 int main() {
-  nerd::Tensor<int> T({2, 2, 3});
-  T = T.reshape({1, 2, 6});
-  T = T.squeeze();
+  nerd::Tensor<int> T(nerd::Shape{4, 3});
+  std::cout << T.get_shape() << std::endl;
+  std::cout << T << std::endl;
+  T = T.m_transpose();
   std::cout << T.get_shape() << std::endl;
   std::cout << T << std::endl;
   return 0;
