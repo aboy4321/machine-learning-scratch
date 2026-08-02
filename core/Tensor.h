@@ -5,6 +5,7 @@
 #include <cassert>
 #include <cstddef> 
 #include <iostream>
+#include <algorithm>
 
 namespace nerd {
 
@@ -22,7 +23,7 @@ class Tensor {
     Shape strides;    
 
     // computing strides to help with multidim indexing
-    Shape compute_strides() {
+    Shape compute_strides() const {
       Shape strides(shape.rank());
       for (int i = shape.rank() - 2; i >= 0; --i ) {
         strides[i] = strides[i + 1] * shape[i + 1];
@@ -235,6 +236,26 @@ class Tensor {
     Tensor operator/(const Type& n) const {
       Tensor res = *this;
       res /= n;
+      return res;
+    }
+
+    Tensor reshape(const Shape other) const {
+      assert(shape.size() == other.size());
+      Tensor res = *this;
+      res.shape = other;
+      res.strides = res.compute_strides();
+      return res;
+    }
+
+    Tensor flatten() const {
+      return reshape({size()});
+
+    }
+
+    Tensor squeeze() const {
+      Tensor res = *this;
+      res.shape.remove();
+      res.strides = res.compute_strides();
       return res;
     }
 

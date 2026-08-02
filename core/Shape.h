@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <cassert>
 #include <iostream>
+#include <algorithm>
 
 namespace nerd {
 
@@ -38,17 +39,20 @@ class Shape {
       os << "}";
       return os;
     }
+    auto begin() { return dim.begin(); }
+  
+    auto end() { return dim.end(); }
+    
+    auto begin() const { return dim.begin(); }
 
-    auto begin() const {
-        return dim.begin();
-    }
-
-    auto end() const {
-        return dim.end();
-    }
+    auto end() const { return dim.end(); }
 
     std::size_t rank() const {
       return dim.size();
+    }
+    
+    void remove() {
+      dim.erase(std::remove(dim.begin(), dim.end(), 1), dim.end());
     }
 
     std::size_t ndim() const {
