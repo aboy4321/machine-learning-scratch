@@ -6,6 +6,9 @@
 #include <cstddef> 
 #include <iostream>
 #include <algorithm>
+#include <numeric>
+#include <execution>
+#include <cmath>
 
 namespace nerd {
 
@@ -237,6 +240,10 @@ class Tensor {
       return res;
     }
 
+    /*
+     * Generic Tensor Manipulation
+     */
+
     Tensor m_transpose() const {
       assert(ndim() == 2);
       Tensor res(Shape{shape[1], shape[0]});
@@ -282,6 +289,48 @@ class Tensor {
         res.strides[i] = this->strides[other[i]];
       }
       return res;
+    }
+
+    /* 
+     * Tensor Reductions and Statistics via computation
+     */
+
+    Type sum() const {
+      assert(!empty());
+      return std::accumulate(begin(), end(), Type{0}); 
+    }
+
+    double mean() const {
+      assert(!empty());
+      return sum() / size();
+    }
+
+    double stdev() const {
+      assert(!empty());
+      return std::sqrt(var());
+    }
+
+    double var() const {
+      assert(!empty());
+      double _mean = mean();
+      double sqrd_diff_sum = 0.0;
+      for (const auto& x : *this) {
+        double diff = x - _mean;
+        sqrd_diff_sum += diff * diff;
+      }
+      return sqrd_diff_sum / size();
+    }
+
+    Type min() const {
+      assert(!empty());
+      auto min_it = std::min_element(begin(), end());
+      return *min_it;
+    }
+
+    Type max() const {
+      assert(!empty());
+      auto max_it = std::max_element(begin(), end());
+      return *max_it;
     }
 
     /*

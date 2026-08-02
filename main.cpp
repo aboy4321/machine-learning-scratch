@@ -1,6 +1,5 @@
 #include <Shape.h>
 #include <TensorMath.h>
-#include <TensorStats.h>
 #include <TensorRandom.h>
 #include <Tensor.h>
 #include <iostream>
