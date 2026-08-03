@@ -50,6 +50,15 @@ class Tensor {
       return index;
     }
 
+    std::vector<std::size_t> unravel(std::size_t index) const {
+      std::vector<std::size_t> coords(shape.rank());
+      for (std::size_t i = 0; i < shape.rank(); ++i) {
+        coords[i] = index / strides[i];
+        index %= strides[i];
+      }
+      return coords;
+    }
+
     // helper printing function, takes into account varying dimensions, thus nesting bracketss where necessary
     void print_recursive(
         std::ostream& os,
@@ -269,7 +278,7 @@ class Tensor {
 
     Tensor squeeze() const {
       Tensor res = *this;
-      res.shape.remove();
+      res.shape.remove_val(1);
       res.strides = res.compute_strides();
       return res;
     }
@@ -300,9 +309,29 @@ class Tensor {
       return std::accumulate(begin(), end(), Type{0}); 
     }
 
+    Tensor<double> sum(std::size_t dim) const {
+      assert(dim < shape.rank());
+      Shape other = shape;
+      other.remove_dim(dim);
+      Tensor<double> res(other, Type{0});
+      for (std::size_t i = 0; i < size(); ++i) {
+        auto coord = unravel(i);
+        coord.erase(coord.begin() + dim);
+        res(coord) += data[i];
+      }
+      return res;
+    }
+
     double mean() const {
       assert(!empty());
       return sum() / size();
+    }
+
+    Tensor<double> mean(std::size_t dim) const {
+      assert(dim < shape.rank());
+      Tensor<double> res = sum(dim);
+      res /= static_cast<Type>(shape[dim]);
+      return res;
     }
 
     double stdev() const {

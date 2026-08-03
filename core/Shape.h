@@ -51,8 +51,13 @@ class Shape {
       return dim.size();
     }
     
-    void remove() {
-      dim.erase(std::remove(dim.begin(), dim.end(), 1), dim.end());
+    void remove_val(std::size_t val) {
+      dim.erase(std::remove(dim.begin(), dim.end(), val), dim.end());
+    }
+
+    void remove_dim(std::size_t index) {
+      assert(index < dim.size());
+      dim.erase(dim.begin() + index);
     }
 
     void add(std::size_t index, std::size_t val) {
