@@ -16,10 +16,12 @@ int main() {
   auto X = nerd::sum(T, 1);
   auto Y = nerd::mean(T, 1);
   auto Z = nerd::var(T, 1);
+  auto W = nerd::stdev(T, 1);
 
   std::cout << T << std::endl;
   std::cout << X << std::endl;
   std::cout << Y << std::endl;
   std::cout << Z << std::endl;
+  std::cout << W << std::endl;
   return 0;
 }
