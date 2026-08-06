@@ -3,6 +3,7 @@
 #include <Shape.h>
 #include <Tensor.h>
 #include <TensorMath.h>
+#include <limits>
 
 namespace nerd {
 
@@ -88,10 +89,39 @@ Type min(const Tensor<Type>& T) {
 }
 
 template <typename Type>
+Tensor<Type> min(const Tensor<Type>& T, std::size_t dim) {
+  assert(dim < T.ndim());
+  Shape other = T.get_shape();
+  other.remove_dim(dim);
+  Tensor<Type> res(other, std::numeric_limits<Type>::max());
+  for (std::size_t i = 0; i < T.size(); ++i) {
+    auto coord = T.unravel(i);
+    coord.erase(coord.begin() + dim);
+    Type minimum = std::min(T[i], res(coord));
+    res(coord) = minimum;
+  }
+  return res;
+}
+
+template <typename Type>
 Type max(const Tensor<Type>& T) {
   assert(!T.empty());
   auto max_it = std::max_element(T.begin(), T.end());
   return *max_it;
 }
 
+template <typename Type>
+Tensor<Type> max(const Tensor<Type>& T, std::size_t dim) {
+  assert(dim < T.ndim());
+  Shape other = T.get_shape();
+  other.remove_dim(dim);
+  Tensor<Type> res(other, std::numeric_limits<Type>::min());
+  for (std::size_t i = 0; i < T.size(); ++i) {
+    auto coord = T.unravel(i);
+    coord.erase(coord.begin() + dim);
+    Type maximum = std::max(T[i], res(coord));
+    res(coord) = maximum;
+  }
+  return res;
+}
 }

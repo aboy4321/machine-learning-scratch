@@ -7,7 +7,7 @@
 
 int main() {
   nerd::Tensor<double> T(nerd::Shape{3, 4}, 1);
-  for (int i = 0; i < T.size(); i++) {
+  for (int i = 4; i < T.size(); i++) {
     T[i] = i;
   }
 
@@ -17,11 +17,15 @@ int main() {
   auto Y = nerd::mean(T, 1);
   auto Z = nerd::var(T, 1);
   auto W = nerd::stdev(T, 1);
+  auto M = nerd::min(T, 1);
+  auto B = nerd::max(T, 1);
 
   std::cout << T << std::endl;
   std::cout << X << std::endl;
   std::cout << Y << std::endl;
   std::cout << Z << std::endl;
   std::cout << W << std::endl;
+  std::cout << M << std::endl;
+  std::cout << B << std::endl;
   return 0;
 }
