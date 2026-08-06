@@ -26,7 +26,7 @@ class Tensor {
     Shape strides;    
 
     // computing strides to help with multidim indexing
-    Shape compute_strides() const {
+    Shape compute_strides() {
       Shape strides(shape.rank());
       for (int i = shape.rank() - 2; i >= 0; --i ) {
         strides[i] = strides[i + 1] * shape[i + 1];
@@ -50,16 +50,7 @@ class Tensor {
       return index;
     }
 
-    std::vector<std::size_t> unravel(std::size_t index) const {
-      std::vector<std::size_t> coords(shape.rank());
-      for (std::size_t i = 0; i < shape.rank(); ++i) {
-        coords[i] = index / strides[i];
-        index %= strides[i];
-      }
-      return coords;
-    }
-
-    // helper printing function, takes into account varying dimensions, thus nesting bracketss where necessary
+       // helper printing function, takes into account varying dimensions, thus nesting bracketss where necessary
     void print_recursive(
         std::ostream& os,
         std::size_t dim,
@@ -120,12 +111,12 @@ class Tensor {
   
     // returns tensor of 0s
     static Tensor zeros(const Shape& shape) {
-      return Tensor(shape, 0);
+      return Tensor(shape, Type{0});
     }
 
     // returns tensors of 1s
     static Tensor ones(const Shape& shape) {
-      return Tensor(shape, 1);
+      return Tensor(shape, Type{1});
     }
 
     // returns identity matrix
@@ -150,6 +141,15 @@ class Tensor {
     /*
      * Accesing data and data at index + printing
      */
+
+    std::vector<std::size_t> unravel(std::size_t index) const {
+      std::vector<std::size_t> coords(shape.rank());
+      for (std::size_t i = 0; i < shape.rank(); ++i) {
+        coords[i] = index / strides[i];
+        index %= strides[i];
+      }
+      return coords;
+    }
 
     // For modification of data 
     Type& operator[](std::size_t i) {
@@ -299,69 +299,6 @@ class Tensor {
       }
       return res;
     }
-
-    /* 
-     * Tensor Reductions and Statistics via computation
-     */
-
-    Type sum() const {
-      assert(!empty());
-      return std::accumulate(begin(), end(), Type{0}); 
-    }
-
-    Tensor<double> sum(std::size_t dim) const {
-      assert(dim < shape.rank());
-      Shape other = shape;
-      other.remove_dim(dim);
-      Tensor<double> res(other, Type{0});
-      for (std::size_t i = 0; i < size(); ++i) {
-        auto coord = unravel(i);
-        coord.erase(coord.begin() + dim);
-        res(coord) += data[i];
-      }
-      return res;
-    }
-
-    double mean() const {
-      assert(!empty());
-      return sum() / size();
-    }
-
-    Tensor<double> mean(std::size_t dim) const {
-      assert(dim < shape.rank());
-      Tensor<double> res = sum(dim);
-      res /= static_cast<Type>(shape[dim]);
-      return res;
-    }
-
-    double stdev() const {
-      assert(!empty());
-      return std::sqrt(var());
-    }
-
-    double var() const {
-      assert(!empty());
-      double _mean = mean();
-      double sqrd_diff_sum = 0.0;
-      for (const auto& x : *this) {
-        double diff = x - _mean;
-        sqrd_diff_sum += diff * diff;
-      }
-      return sqrd_diff_sum / size();
-    }
-
-    Type min() const {
-      assert(!empty());
-      auto min_it = std::min_element(begin(), end());
-      return *min_it;
-    }
-
-    Type max() const {
-      assert(!empty());
-      auto max_it = std::max_element(begin(), end());
-      return *max_it;
-    }
-
     /*
      *  Iterators
      */
